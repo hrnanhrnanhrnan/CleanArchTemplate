@@ -1,5 +1,5 @@
 {
-  "CleanArchTemplatees": {
+  "profiles": {
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
