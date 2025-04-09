@@ -2,10 +2,8 @@ using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using CleanArchTemplate.Application.Users;
-using CleanArchTemplate.Application.Users.Handlers;
-using CleanArchTemplate.Application.Users.Requests;
-using CleanArchTemplate.Application.Users.Responses;
 using CleanArchTemplate.Application.Common.Interfaces;
+using CleanArchTemplate.Application.Common;
 
 namespace CleanArchTemplate.Application;
 
@@ -13,8 +11,8 @@ public static class ServiceRegistration
 {
     public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
         => services.AddValidatorsFromAssembly()
-                    .AddScoped<IUserService, UserService>()
-                    .AddScoped<IHandler<CreateUserRequest, UserResponse>, CreateUserHandler>();
+                .AddScoped<IRequestValidator, RequestValidator>()
+                .AddScoped<IUserService, UserService>();
 
 
     private static IServiceCollection AddValidatorsFromAssembly(this IServiceCollection services)
@@ -28,11 +26,16 @@ public static class ServiceRegistration
                             i.GetGenericTypeDefinition() == typeof(IValidator<>)))
             .ToList();
 
-            foreach(var validatorType in validatorTypes)
-            {
-                services.AddScoped(validatorType);
-            }
+        foreach(var validatorType in validatorTypes)
+        {
+            var interfaceType = validatorType
+                .GetInterfaces()
+                .First(i => i.IsGenericType 
+                            && i.GetGenericTypeDefinition() == typeof(IValidator<>));
 
-            return services;
+            services.AddScoped(interfaceType, validatorType);
+        }
+
+        return services;
     }
 }

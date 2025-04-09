@@ -5,5 +5,5 @@ namespace CleanArchTemplate.Application.Users;
 
 public interface IUserRepository : IBaseRepository<User>
 {
-    Task<bool> UsernameExists(string username);
+    Task<bool> UsernameExistsAsync(string username, CancellationToken token = default);
 }

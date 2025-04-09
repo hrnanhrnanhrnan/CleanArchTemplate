@@ -8,9 +8,9 @@ internal sealed class UserRepository(ApplicationDbContext context)
     : BaseRepository<User>(context),
         IUserRepository
 {
-    public async Task<bool> UsernameExists(string username)
+    public async Task<bool> UsernameExistsAsync(string username, CancellationToken token = default)
     {
-        var entites = (await Query(x => x.Username == username))
+        var entites = (await Query(x => x.Username == username, token: token))
             .ToArray();
 
         return entites.Length != 0;

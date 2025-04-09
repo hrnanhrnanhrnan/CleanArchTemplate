@@ -6,9 +6,9 @@ namespace CleanArchTemplate.Application.Users;
 
 public interface IUserService
 {
-    Task<Result<IEnumerable<UserResponse>>> GetAllUser();
-    Task<Result<UserResponse>> GetUserById(int id);
-    Task<Result<UserResponse>> AddUser(CreateUserRequest request);
-    Task<Result<UserResponse>> UpdateUser(UpdateUserRequest request);
-    Task<Result> RemoveUser(int id);
+    Task<Result<IEnumerable<UserResponse>>> GetAllUserAsync(CancellationToken token = default);
+    Task<Result<UserResponse>> GetUserByIdAsync(int id, CancellationToken token = default);
+    Task<Result<UserResponse>> AddUserAsync(CreateUserRequest request, CancellationToken token = default);
+    Task<Result<UserResponse>> UpdateUserAsync(UpdateUserRequest request, CancellationToken token = default);
+    Task<Result> RemoveUserAsync(int id, CancellationToken token = default);
 }

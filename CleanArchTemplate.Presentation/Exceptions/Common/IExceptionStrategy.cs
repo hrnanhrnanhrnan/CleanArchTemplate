@@ -1,8 +1,10 @@
+using CleanArchTemplate.Application.Common;
+
 namespace CleanArchTemplate.Presentation.Exceptions.Common;
 
 public interface IExceptionStrategy 
 {
     bool CanHandle(Exception exception);
     int GetStatusCode();
-    object GetResponseObject(Exception exception);
+    ErrorResponse GetResponseObject(Exception exception);
 }

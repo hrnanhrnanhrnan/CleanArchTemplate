@@ -1,7 +1,5 @@
 using CleanArchTemplate.Application.Users;
 using CleanArchTemplate.Application.Users.Requests;
-using CleanArchTemplate.Application.Users.Responses;
-using CleanArchTemplate.Application.Common.Interfaces;
 
 namespace CleanArchTemplate.Presentation.Endpoints;
 
@@ -22,45 +20,45 @@ internal static class UserEndpoints
         return group;
     }
 
-    public static async Task<IResult> GetAllUsers(IUserService userService) 
+    public static async Task<IResult> GetAllUsers(IUserService userService, CancellationToken token) 
     {
-        var (users, error, isSuccess) = await userService.GetAllUser();
+        var (users, error, isSuccess) = await userService.GetAllUserAsync(token);
 
         return isSuccess
             ? Results.Ok(users)
             : Results.NotFound(error);
     }
 
-    public static async Task<IResult> GetUserById(int id, IUserService userService) 
+    public static async Task<IResult> GetUserById(int id, IUserService userService, CancellationToken token) 
     {
-        var (users, error, isSuccess) = await userService.GetUserById(id);
+        var (users, error, isSuccess) = await userService.GetUserByIdAsync(id, token);
 
         return isSuccess
             ? Results.Ok(users)
             : Results.NotFound(error);
     }
 
-    public static async Task<IResult> AddUser(CreateUserRequest request, IHandler<CreateUserRequest, UserResponse> handler) 
+    public static async Task<IResult> AddUser(CreateUserRequest request, IUserService userService, CancellationToken token) 
     {
-        var (user, error, isSuccess) = await handler.InvokeAsync(request);
-
-        return isSuccess
-            ? Results.Ok(user)
-            : Results.Conflict(error);
-    }
-
-    public static async Task<IResult> UpdateUser(UpdateUserRequest request, IUserService userService) 
-    {
-        var (user, error, isSuccess) = await userService.UpdateUser(request);
+        var (user, error, isSuccess) = await userService.AddUserAsync(request, token);
 
         return isSuccess
             ? Results.Ok(user)
             : Results.BadRequest(error);
     }
 
-    public static async Task<IResult> RemoveUser(int id, IUserService userService) 
+    public static async Task<IResult> UpdateUser(UpdateUserRequest request, IUserService userService, CancellationToken token) 
     {
-        var (error, isSuccess) = await userService.RemoveUser(id);
+        var (user, error, isSuccess) = await userService.UpdateUserAsync(request, token);
+
+        return isSuccess
+            ? Results.Ok(user)
+            : Results.BadRequest(error);
+    }
+
+    public static async Task<IResult> RemoveUser(int id, IUserService userService, CancellationToken token) 
+    {
+        var (error, isSuccess) = await userService.RemoveUserAsync(id, token);
 
         return isSuccess
             ? Results.Ok()

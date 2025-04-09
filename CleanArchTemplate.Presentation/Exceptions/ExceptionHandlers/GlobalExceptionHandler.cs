@@ -19,7 +19,7 @@ internal static class GlobalExceptionHandler
         );
 
         var exceptionStrategies = context.RequestServices.GetServices<IExceptionStrategy>();
-        var strategy = exceptionStrategies.First(ex => ex.CanHandle(exception));
+        var strategy = exceptionStrategies.FirstOrDefault(ex => ex.CanHandle(exception));
 
         if (strategy is not null)
         {
